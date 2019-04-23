@@ -7,6 +7,7 @@ var app = express();
 app.use( bodyParser.urlencoded( { extended: true } ) );
 app.use( bodyParser.json() );
 app.use( express.Router() );
+app.use( express.static( __dirname + '/public' ) );
 
 var items = [];
 
@@ -16,6 +17,7 @@ app.post( '/item', function( req, res ){
   if( !req.body._id ){
     req.body._id = uuidv1();
   }
+  req.body.timestamp = ( new Date() ).getTime();
   items.push( req.body );
 
   res.write( JSON.stringify( req.body ) );
@@ -24,15 +26,24 @@ app.post( '/item', function( req, res ){
 
 app.get( '/items', function( req, res ){
   res.contentType( 'application/json; charset=utf-8' );
+  var limit = 0;
+  var offset = 0;
+  if( req.query.limit ){ limit = parseInt( req.query.limit ); }
+  if( req.query.offset ){ offset = parseInt( req.query.offset ); }
 
-  res.write( JSON.stringify( items ) );
+  var _items = JSON.parse( JSON.stringify( items ) );
+  if( limit || offset ){
+    _items = _items.slice( offset, offset + limit );
+  }
+
+  res.write( JSON.stringify( _items ) );
   res.end();
 });
 
-app.delete( '/item/:id', function( req, res ){
+app.delete( '/item/:_id', function( req, res ){
   res.contentType( 'application/json; charset=utf-8' );
 
-  var _id = req.params.id;
+  var _id = req.params._id;
   for( var i = 0; i < items.length; i ++ ){
     if( items[i]._id == _id ){
       items.splice( i, 1 );
@@ -43,7 +54,7 @@ app.delete( '/item/:id', function( req, res ){
   res.end();
 });
 
-var port = 3000;
+var port = 3010;
 app.listen( port );
 console.log( 'Server starting on ' + port + '...' );
 

@@ -1,0 +1,83 @@
+swagger: '2.0'
+info:
+  description: Items API ドキュメント
+  version: 0.0.1
+  title: Items REST APIs
+host: localhost:3000
+basePath: /
+tags:
+  - name: item
+    description: Item
+schemes:
+  - http
+  - https
+paths:
+  /item/{_id}:
+    delete:
+      tags:
+        - item
+      summary: 指定した１つのデータを削除する
+      description: \{_id\} で指定した id のデータを一件削除する
+      parameters:
+        - name: _id
+          type: string
+          in: path
+          description: id
+          required: true
+      responses:
+        '200':
+          description: 成功
+        '400':
+          description: エラー
+  /item:
+    post:
+      tags:
+        - item
+      summary: データを作成する
+      description: データを作成する
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/ItemRequest'
+      responses:
+        '200':
+          description: 成功
+        '400':
+          description: エラー
+  /materials:
+    get:
+      tags:
+        - item
+      summary: データの複数件取得
+      description: 格納されているデータを複数件取得する
+      produces:
+        - application/json
+      parameters:
+        - name: limit
+          type: integer
+          in: query
+          description: 取りだす件数（無指定時は全件）
+        - name: offset
+          type: integer
+          in: query
+          description: 取りだす際のオフセット（無指定時は0）
+      responses:
+        '200':
+          description: 成功
+        '400':
+          description: エラー
+definitions:
+  ItemRequest:
+    type: object
+    properties:
+      _id:
+        type: string
+        description: id（空の場合はランダムに作成）
+      name:
+        type: string
+        description: 名前
+      age:
+        type: integer
+        description: 年齢
+

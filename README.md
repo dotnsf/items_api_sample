@@ -1,12 +1,12 @@
 # items_api_sample
 
-Simple API
+Simple API with Sample application.
 
 - POST /item : Create
 
 - GET /items : Read
 
-- DELETE /item/:id : Delete
+- DELETE /item/:_id : Delete
 
 
 ## How to test API
